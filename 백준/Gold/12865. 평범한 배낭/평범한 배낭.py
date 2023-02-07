@@ -1,31 +1,17 @@
-n, k = map(int,input().split())
-values = [list(map(int,input().split())) for __ in range(n)]
+# 평범한 배낭 (Knapsack Problem)
 
-# dp[k] : the maximum value that we can get at that weight k
-#         with the picked index of items -> 안 될듯
+N, K = map(int,input().split())
+arr = [list(map(int,input().split())) for __ in range(N)]
 
-values.sort(reverse=True)
-dp = [[-1, [1]*n] for __ in range(k+1)]
-dp[0] = [0, [1]*n]
 
-for i in range(k+1):
-    for j in range(n):
-        w, v = values[j]
-        if i-w < 0:
-            continue
+dp = [[0 for __ in range(K+1)] for __ in range(N+1)]
+arr.sort(reverse=True)
+for i in range(1,N+1):
+    # i = 1
+    for j in range(1,K+1):
+        dp[i][j] = dp[i-1][j]
+        if j-arr[i-1][0] >= 0:  # 이번 줄에서 arr를 담을 수 있는 경우
+            dp[i][j] = max(dp[i][j], dp[i-1][j-arr[i-1][0]]+arr[i-1][1])
         
-        if dp[i-w][1][j] == 0:
-            continue
 
-        pred_flag = dp[i-w][1][:]
-        if dp[i][0] < dp[i-w][0]+v:
-            pred_flag[j] = 0
-            dp[i] = [dp[i-w][0]+v,pred_flag]
-
-answer = []
-for i in range(k+1):
-    answer.append(dp[i][0])
-    
-answer = max(answer)
-print(answer)
-
+print(dp[N][K])
