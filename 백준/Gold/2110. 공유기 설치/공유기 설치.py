@@ -1,35 +1,29 @@
 import sys
 input = sys.stdin.readline
 
-def num_need(m,N):
-    distance = 0
-    count = 1
-    for i in range(N-1):
-        distance += arr[i+1]-arr[i]
-        if distance >= m:
-            count += 1
-            distance = 0
-    
-    return count
-
-
-
 N, C = map(int,input().split())
-arr = [int(input()) for __ in range(N)]
-arr.sort()
+houses = [int(input()) for __ in range(N)]
 
 
-l, r = 0, 1000000000
+def max_num(gap): # return maximum number of 공유기 if 최대 거리가 k
+    res = 1
+    start = houses[0]
+    for i in range(1,N):
+        if houses[i] >= start+gap:
+            res += 1
+            start = houses[i]
     
+    return res
+        
+    
+houses.sort()
+l, r = 0, 1_000_000_001
+
 while l < r:
-    m = (l+r)//2
-    if num_need(m,N) >= C:
-        l = m+1
+    mid = (l+r)//2
+    if max_num(mid) >= C:
+        l = mid+1
     else:
-        r = m
+        r = mid
 
-answer = l-1
-print(answer)
-
-
-    
+print(l-1)
