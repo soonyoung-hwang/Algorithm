@@ -1,9 +1,11 @@
+import sys
+input = sys.stdin.readline
+
 N = int(input())
 arr = list(map(int,input().split()))
 arr.sort()
 
 answer = 0
-
 
 for i in range(N):
     l, r = 0, N-1
