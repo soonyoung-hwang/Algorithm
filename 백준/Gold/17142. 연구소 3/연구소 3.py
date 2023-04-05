@@ -1,79 +1,82 @@
-# # # 연구소의 상태가 주어졌을 때, 모든 빈 칸에 바이러스를 퍼뜨리는 최소 시간을 구해보자.
-# # # 연구소의 크기 N(4 ≤ N ≤ 50), 바이러스의 개수 M(1 ≤ M ≤ 10)
-# # # 16 ≤ N by N ≤ 2500
-# # # Maximum step : 2500
-import itertools
+import sys
 from collections import deque
-import copy
-
-Dir = ((0,1),(0,-1),(1,0),(-1,0))
-
-def in_range(x,y):
-    return 0<=x<N and 0<=y<N
-    
-def bfs(activated_virus, total_virus):
-    Q = deque()
-    lab = copy.deepcopy(labs)
-    visited = [[False for __ in range(N)] for __ in range(N)]
-    walls = 0
-    for i in range(N):
-        for j in range(N):
-            if lab[i][j] == 1:
-                walls += 1
-                
-    goal = N*N - walls
-    num_virus = total_virus
-    
-    for virus in activated_virus:
-        Q.append(virus+[0])
-        visited[virus[0]][virus[1]] = True
-        
-    s = -1
-    while Q and num_virus != goal:
-        if num_virus == goal:
-            break
-        
-        x, y, s = Q.popleft()
-        for d in Dir:
-            nx, ny = x+d[0], y+d[1]
-            if not in_range(nx,ny):
-                continue
-            if lab[nx][ny] == 1:
-                continue
-            if visited[nx][ny]:
-                continue
-                
-            if lab[nx][ny] != 2:
-                num_virus += 1
-
-            visited[nx][ny] = True
-            lab[nx][ny] = 2
-            Q.append([nx,ny,s+1])
-
-    for i in range(N):
-        for j in range(N):
-            if lab[i][j] == 0:
-                return INF
-        
-    return s+1
+from copy import deepcopy
+MAX = sys.maxsize
 
 N, M = map(int,input().split())
-labs = [list(map(int,input().split())) for __ in range(N)]
+board = [list(map(int,input().split())) for __ in range(N)]
 
-viruses = []
+goal = 0                    # goal : 맵에 총 퍼져야할 바이러스의 개수
+candidate = []
 for i in range(N):
     for j in range(N):
-        if labs[i][j] == 2:
-            viruses.append([i,j])
+        if board[i][j] == 0:
+            goal += 1
+        if board[i][j] == 2:
+            candidate.append((i,j))
 
-activateds = list(itertools.combinations(viruses,M))
+
+answer = MAX
+L = len(candidate)
+dd = ((0, 1), (0, -1), (1, 0), (-1, 0))
+
+def check():
+    global goal
+
+    visited = [[0 for __ in range(N)] for __ in range(N)]
+
+    Q = deque(stack[:])
+    for virus in stack:
+        board[virus[0]][virus[1]] = 3
+        visited[virus[0]][virus[1]] = 1
+
+    cnt = 0
+    total = 0
+    while Q:
+        if total == goal:
+            return cnt
+
+        for i in range(len(Q)):
+            r, c = Q.popleft()
+            
+            for k in range(4):
+                nr, nc = r + dd[k][0], c + dd[k][1]
+                if not (0 <= nr < N and 0 <= nc < N): continue
+                if visited[nr][nc]: continue
+                if board[nr][nc] == 1: continue
+                    
+                visited[nr][nc] = 1
+                if board[nr][nc] == 0:
+                    total += 1
+                
+                Q.append((nr, nc))
+
+        cnt += 1
+        
+
+    if total != goal:
+        return MAX
 
 
-INF = 2501
-answer = INF
-num_v = len(viruses)
 
-for activate in activateds:
-    answer = min(answer,bfs(activate, num_v))
+stack = []
+def dfs(idx, cnt):
+    global answer
+    if cnt == M:
+        answer = min(answer,check())
+        for virus in stack:
+            board[virus[0]][virus[1]] = 2   # check 에서 활성화 시켰던 것을 다시 비활성화
+        
+        return
+    
+    if idx == L:
+        return
+    
+    stack.append(candidate[idx])
+    dfs(idx+1, cnt+1)
+    stack.pop()
+    dfs(idx+1, cnt)
+    
 
-print(answer if answer != INF else -1)
+dfs(0, 0)
+print(answer if answer != MAX else -1)

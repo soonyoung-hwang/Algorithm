@@ -1,14 +1,14 @@
-# [Gold IV] 연구소 3 - 17142 
+# [Gold III] 연구소 3 - 17142 
 
 [문제 링크](https://www.acmicpc.net/problem/17142) 
 
 ### 성능 요약
 
-메모리: 32528 KB, 시간: 1296 ms
+메모리: 34376 KB, 시간: 520 ms
 
 ### 분류
 
-너비 우선 탐색(bfs), 브루트포스 알고리즘(bruteforcing), 그래프 이론(graphs), 그래프 탐색(graph_traversal)
+그래프 이론, 브루트포스 알고리즘, 그래프 탐색, 너비 우선 탐색
 
 ### 문제 설명
 
