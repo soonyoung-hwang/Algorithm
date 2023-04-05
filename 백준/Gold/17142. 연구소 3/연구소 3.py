@@ -1,13 +1,16 @@
 import sys
 from collections import deque
 from copy import deepcopy
+input = sys.stdin.readline
 MAX = sys.maxsize
+
 
 N, M = map(int,input().split())
 board = [list(map(int,input().split())) for __ in range(N)]
 
 goal = 0                    # goal : 맵에 총 퍼져야할 바이러스의 개수
-candidate = []
+candidate = []              # 퍼질 수 있는 바이러스의 조합
+
 for i in range(N):
     for j in range(N):
         if board[i][j] == 0:
@@ -19,6 +22,7 @@ for i in range(N):
 answer = MAX
 L = len(candidate)
 dd = ((0, 1), (0, -1), (1, 0), (-1, 0))
+
 
 def check():
     global goal
