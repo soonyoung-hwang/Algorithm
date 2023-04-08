@@ -1,54 +1,45 @@
 N, M, H = map(int,input().split())
-visited = [[False]*(N) for __ in range(H+1)]
+T = (N-1) * H
+
+sadari = [[False for __ in range(N-1)] for __ in range(H)]
 for __ in range(M):
-    a, b = map(int,input().split())
-    visited[a][b] = True
+    h, n = map(int,input().split())
+    sadari[h-1][n-1] = True
 
 def check():
-    global visited
-    
-    start = [i+1 for i in range(N)]
-    for i in range(1,H+1):
-        for j in range(1,N):
-            if(visited[i][j] == True):
-                start[j-1], start[j] = start[j], start[j-1]
-    
-    for i in range(N):
-        if(start[i] != (i+1)):
+    for s in range(N):
+        cur = s
+        for h in range(H):
+            if cur > 0 and sadari[h][cur-1]:
+                cur -= 1
+
+            elif cur < N-1 and sadari[h][cur]:
+                cur += 1
+
+        if cur != s:
             return False
-        
+
     return True
 
-def dfs(idx,cnt):
-    global mini
-    if(cnt > 3 or cnt >= mini):
-        return
-        
-    if(check()):
-        mini = min(mini,cnt)    
+answer = 4
+def dfs(idx, cnt):
+    global answer
+    if cnt >= answer:
         return
 
-    for i in range(idx,len(candi)):
-        x, y = candi[i]
-        if(visited[x][y-1] == True or (y+1 <= N-1 and visited[x][y+1] == True)):
-            continue
-        visited[x][y] = True
-        dfs(i+1, cnt+1)
-        visited[x][y] = False
-    
-    return
+    if check():
+        answer = cnt
+        return
 
-mini = 4
-candi = []
-
-for i in range(1,H+1):
-    for j in range(1,N):
-        if(visited[i][j] == True or visited[i][j-1] == True or (j+1 <= N-1 and visited[i][j+1] == True)):
-            continue    
-        candi.append([i,j])
+    for ii in range(idx, T):
+        h, w = ii // (N - 1), ii % (N - 1)
+        if not sadari[h][w]:
+            if not sadari[h][max(0, w-1)] and not sadari[h][min(N-2,w+1)]:
+                sadari[h][w] = True
+                dfs(ii+1, cnt+1)
+                sadari[h][w] = False
 
 
-        
-dfs(0,0)
-print(mini if mini < 4 else -1)
 
+dfs(0, 0)
+print(answer if answer != 4 else -1)
