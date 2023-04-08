@@ -1,43 +1,54 @@
-n, m, h = map(int, input().split())
-visited = [[False] * (n+1) for _ in range(h+1)]
-combi = []
-for _ in range(m):
-    a, b = map(int, input().split())
+N, M, H = map(int,input().split())
+visited = [[False]*(N) for __ in range(H+1)]
+for __ in range(M):
+    a, b = map(int,input().split())
     visited[a][b] = True
 
 def check():
-    for i in range(1, n+1):
-        now = i
-        for j in range(1, h+1):
-            if visited[j][now-1]:
-                now -= 1
-            elif visited[j][now]:
-                now += 1
-        if now != i:
+    global visited
+    
+    start = [i+1 for i in range(N)]
+    for i in range(1,H+1):
+        for j in range(1,N):
+            if(visited[i][j] == True):
+                start[j-1], start[j] = start[j], start[j-1]
+    
+    for i in range(N):
+        if(start[i] != (i+1)):
             return False
+        
     return True
 
-def dfs(depth, idx):
-    global answer
-    if depth >= answer:
+def dfs(idx,cnt):
+    global mini
+    if(cnt > 3 or cnt >= mini):
         return
-    if check():
-        answer = depth
+        
+    if(check()):
+        mini = min(mini,cnt)    
         return
 
-    for c in range(idx, len(combi)):
-        x, y = combi[c]
-        if not visited[x][y-1] and not visited[x][y+1]:
-            visited[x][y] = True
-            dfs(depth+1, c+1)
-            visited[x][y] = False
+    for i in range(idx,len(candi)):
+        x, y = candi[i]
+        if(visited[x][y-1] == True or (y+1 <= N-1 and visited[x][y+1] == True)):
+            continue
+        visited[x][y] = True
+        dfs(i+1, cnt+1)
+        visited[x][y] = False
+    
+    return
 
-for i in range(1,h+1):
-    for j in range(1, n):
-        if not visited[i][j-1] and not visited[i][j] and not visited[i][j+1]:
-            combi.append([i, j])
+mini = 4
+candi = []
 
-answer = 4
-dfs(0, 0)
+for i in range(1,H+1):
+    for j in range(1,N):
+        if(visited[i][j] == True or visited[i][j-1] == True or (j+1 <= N-1 and visited[i][j+1] == True)):
+            continue    
+        candi.append([i,j])
 
-print(answer if answer < 4 else -1)
+
+        
+dfs(0,0)
+print(mini if mini < 4 else -1)
+
