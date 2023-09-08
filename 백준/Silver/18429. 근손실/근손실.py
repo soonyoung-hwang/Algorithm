@@ -12,8 +12,9 @@ def backtrack(idx, limit):
         return
     for i in range(n):
         if not visited[i] and (limit + arr[i] - k) >= 500:
+            new_limit = limit + arr[i] - k
             visited[i] = True
-            backtrack(idx + 1, limit + arr[i] - k)
+            backtrack(idx + 1, new_limit)
             visited[i] = False
     return
 backtrack(0, 500)
