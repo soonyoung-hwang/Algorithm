@@ -1,3 +1,7 @@
+import sys
+
+input = sys.stdin.readline
+
 def find_cost(a, b):
     visited = [False for _ in range(N + 1)]
     stack = [(a, 0)]
