@@ -5,7 +5,7 @@ import sys
 input = sys.stdin.readline
 
 N, M = map(int, input().split())
-routes = defaultdict(list)
+routes = [[] for _ in range(N+1)]
 for _ in range(M):
     a, b, c = map(int, input().split())
     routes[a].append((b, c))
