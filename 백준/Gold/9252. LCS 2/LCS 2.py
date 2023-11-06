@@ -1,76 +1,32 @@
-# LCS2
-
-
-"""
-     ACAYKP
-    C011111
-    A112222
-    P112223
-    C122223
-    A123333
-    K123344
-"""
-
-"""
-     PASDOP
-    A011111
-    K011111
-    S012222
-    P112223
-    D112333
-    P112334
-"""
-# 이런식으로 채우면 잘못된 것 없이 다 채워질거 같은데..?
-
 A = input().rstrip()
 B = input().rstrip()
-common = [[0 for __ in range(len(B))] for __ in range(len(A))]
-found = False
-for i in range(len(A)):         # A가 세로
-    for j in range(len(B)):     # B가 가로
-        if A[i]==B[j]:
-            found = True
-            common[i][j] = 1
-            if i > 0 and j > 0:
-                common[i][j] = max(common[i][j], common[i-1][j-1]+1)
 
+dp = [[0 for _ in range(len(A)+1)] for _ in range(len(B)+1)]
+up = [[False for _ in range(len(A)+1)] for _ in range(len(B)+1)]
+
+# dp 찾기
+# dp[i][j] = dp[i-1][j-1] + 1             (if B[i] == A[j])
+#          = max(dp[i-1][j], dp[i][j-1])  (else)
+for i in range(1, len(B)+1):
+    for j in range(1, len(A)+1):
+        if A[j-1] == B[i-1]:
+            dp[i][j] = dp[i-1][j-1]+1
+            up[i][j] = True
         else:
-            if j > 0:
-                common[i][j] = max(common[i][j], common[i][j-1])
-            if i > 0:
-                common[i][j] = max(common[i][j], common[i-1][j])
+            dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-if found:
-    answer = []
-    i, j = len(A)-1, len(B)-1
+answer = []
 
-    while i >= 0 or j >= 0:
-        while j > 0 and common[i][j] == common[i][j-1]:
-            j -= 1
-        while i > 0 and common[i][j] == common[i-1][j]:
-            i -= 1
-        
-        answer.append(A[i])
-        if common[i][j] == 1:
+# dp에서 수열 찾기
+next_value = dp[len(B)][len(A)]
+to = len(A)
+for i in range(len(B), 0, -1):
+    for j in range(1, to+1):
+        if dp[i][j] == next_value and up[i][j]:
+            answer.append(A[j-1])
+            next_value -= 1
+            to = j-1
             break
-        i -= 1
-        j -= 1
-        
-        # if j > 0:
-        #     answer.append(A[i])
-            
-        #     i -= 1
-        #     j -= 1
-        # else:
-            
-        #     answer.append(A[i])
-        #     if common[i][j] == 1:
-        #         break
 
-    answer_str = ''
-    while answer:
-        answer_str += answer.pop()
-    print(len(answer_str))
-    print(answer_str)
-else:
-    print(0)
+print(len(answer))
+print(''.join(answer[::-1]))
