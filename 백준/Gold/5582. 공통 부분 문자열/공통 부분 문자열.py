@@ -1,38 +1,15 @@
-from collections import deque
-
 A = input().rstrip()
 B = input().rstrip()
 
-if len(A) > len(B):
-    A, B = B, A
+dp = [[0 for _ in range(len(B)+1)] for _ in range(len(A)+1)]
 
-C = deque(B)
-comparison = deque()
+for i in range(1, len(A)+1):
+    for j in range(1, len(B)+1):
+        if A[i-1] == B[j-1]:
+            dp[i][j] = dp[i-1][j-1] + 1
+
 answer = 0
-while C:
-    comparison.appendleft(C.pop())
-    if len(comparison) > len(A):
-        comparison.pop()
-    cnt = 0
-    for i in range(len(comparison)):
-        if comparison[i] == A[i]:
-            cnt += 1
-        else:
-            answer = max(answer,cnt)
-            cnt = 0
-    else:
-        answer = max(answer,cnt)
-
-while comparison:
-    comparison.pop()
-    cnt = 0
-    for i in range(0, len(comparison)):
-        if comparison[-(i+1)] == A[-(i+1)]:
-            cnt += 1
-        else:
-            answer = max(answer,cnt)
-            cnt = 0
-    else:
-        answer = max(answer,cnt)
+for i in range(1, len(A)+1):
+    answer = max(answer, max(dp[i]))
 
 print(answer)
