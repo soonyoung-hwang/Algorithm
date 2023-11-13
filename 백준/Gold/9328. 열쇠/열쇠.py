@@ -1,4 +1,6 @@
+import sys
 from collections import defaultdict, deque
+input = sys.stdin.readline
 
 smalls = 'abcdefghijklmnopqrstuvwxyz'
 bigs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
