@@ -1,51 +1,50 @@
-from collections import deque
+from collections import defaultdict
 
 def solution(coin, cards):
     answer = 0
-    L = len(cards)
-    have = [False for _ in range(L+1)]
-    yet = [False for _ in range(L+1)]
-    for i in range(L//3):
-        have[cards[i]] = True
+    
+    N = len(cards)
+    my_card = defaultdict(bool)
+    pass_card = defaultdict(bool)
     
     life = 0
-    for i in range(1, L//2+1):
-        if have[i] and have[(L+1)-i]:
+
+    for i in range(N//3):
+        card = cards[i]
+        my_card[card] = True
+        if my_card[N+1-card]:
             life += 1
     
-    two_coins = deque()
-    for i in range(L//3, L):
-        if have[(L+1)-cards[i]]:
-            continue
-        if yet[(L+1)-cards[i]]:
-            two_coins.append(i)
-        else:
-            yet[cards[i]] = True
-    
-    count = 0
-    for i in range(L//3, L, 2):
-        if have[(L+1)-cards[i]]:
-            if coin > 0:
+    two_coins = 0
+    cur_round = 1
+    for i in range(N//3, N, 2):
+        # 뽑은 card 처리
+        for card in (cards[i], cards[i+1]):
+            pass_card[card] = True
+            if coin == 0:
+                continue
+                
+            if my_card[N+1-card]:
+                my_card[card] = True
                 coin -= 1
                 life += 1
+                
+            if pass_card[N+1-card]:
+                two_coins += 1
         
-        if have[(L+1)-cards[i+1]]:
-            if coin > 0:
-                coin -= 1
-                life += 1
-        
+        # 목숨 처리
         if life > 0:
             life -= 1
-        else:
-            if coin >= 2 and two_coins[0] <= i+1:
-                two_coins.popleft()
-                coin -= 2
-            else:
-                break
-                
-        count += 1
+            cur_round += 1
+            continue
         
-    answer = count + 1
-    
-    
+        if coin > 1 and two_coins:
+            two_coins -= 1
+            coin -= 2
+            cur_round += 1
+            continue
+
+        break
+        
+    answer = cur_round
     return answer
