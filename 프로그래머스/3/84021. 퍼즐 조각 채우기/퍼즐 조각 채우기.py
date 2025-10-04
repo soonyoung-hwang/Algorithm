@@ -43,39 +43,9 @@ def solution(game_board, table):
             shape = tuple(shape)
             shape_board[shape].append((i, j))
     
-    # default table
-    visited = [[False for _ in range(N)] for _ in range(N)]
-    shape_table = defaultdict(list)
-    for i in range(N):
-        for j in range(N):
-            if table[i][j] == 0:
-                continue
-            if visited[i][j]:
-                continue
-            shape = []
-            visited[i][j] = True
-            dfs(i, j, 0, [])
-            shape = tuple(shape)
-            shape_table[shape].append((i, j))
     
-    for kk in shape_table.keys():
-        for r, c in shape_table[kk]:
-            if len(shape_board[kk]):
-                # 보드에 블록 채우기
-                shape_board[kk].pop()
-                answer += (len(kk) + 1)
-                
-                # 블록 테이블에서 빼기
-                table[r][c] = 0
-                for each_loc in kk:
-                    nr, nc = r, c
-                    for num in each_loc:
-                        nr += dd[num][0]
-                        nc += dd[num][1]
-                    table[nr][nc] = 0
-                
     # rotated table
-    for i in range(3):
+    for i in range(4):
         for i in range((N+1)//2):
             for j in range(N//2):
                 table[j][N-1-i], table[N-1-i][N-1-j], table[N-1-j][i], table[i][j]  \
