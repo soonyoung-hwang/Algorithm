@@ -2,14 +2,6 @@ from collections import deque
 
 def solution(rectangle, characterX, characterY, itemX, itemY):
     answer = 0
-    # 무조건 하나에 걸려있어
-    # before -> after
-    
-    # 상하좌우 본다. 길이 두 개면 옮겨탄다.
-    # (or 방향이 바뀌면 -> 상하(1) 좌우(2)
-    # 모든 점마다, 상하(1) 좌우(2) 박아놓는다. 3이면 교차점
-    # 이 정도면, 위로갈지 아래로갈지 혹은 좌로갈지 우로갈지 모른다.
-    # 또 교차면 피해가면 된다. -> inner라는 소리니까.
     
     N = 50
     box = [[0 for _ in range(N+1)] for _ in range(N+1)]
